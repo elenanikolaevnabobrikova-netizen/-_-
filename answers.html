@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ответы · Цифровой переводчик</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1e293b; --muted:#64748b; --soft:#94a3b8;
+  --blue:#2563eb; --pink:#ec4899; --purple:#8b5cf6;
+  --green:#10b981; --yellow:#f59e0b; --red:#ef4444;
+  --cyan:#06b6d4;
+  --card-border:#e0e7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito',-apple-system,system-ui,sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  line-height:1.55;
+  background:
+    radial-gradient(circle at 12% 8%, #ffe0f0 0%, transparent 40%),
+    radial-gradient(circle at 88% 12%, #d4e9ff 0%, transparent 42%),
+    linear-gradient(135deg, #fef9e7 0%, #f5f0ff 60%, #e0f7ff 100%);
+  background-attachment:fixed;
+}
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--card-border);
+  padding:12px 20px;
+}
+.topbar-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  flex-wrap:wrap;
+}
+.topbar-logo{
+  font-weight:900;font-size:1.05rem;
+  background:linear-gradient(115deg,#ec4899,#8b5cf6 55%,#06b6d4);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  display:flex;align-items:center;gap:8px;text-decoration:none;
+}
+.topbar-logo span{-webkit-text-fill-color:initial;font-size:1.2em}
+.topbar-nav{display:flex;gap:4px;flex-wrap:wrap}
+.topbar-nav a{
+  border:0;background:transparent;
+  color:var(--muted);font:inherit;text-decoration:none;
+  font-weight:800;font-size:.85rem;
+  padding:9px 16px;border-radius:10px;
+  cursor:pointer;transition:.18s;
+}
+.topbar-nav a:hover{color:#4f46e5;background:#eef2ff}
+.topbar-nav a.active{
+  color:#fff;
+  background:linear-gradient(135deg,#ec4899,#8b5cf6 55%,#06b6d4);
+  box-shadow:0 4px 12px -3px rgba(139,92,246,.5);
+}
+.container{max-width:900px;margin:0 auto;padding:0 20px}
+.hero{padding:50px 0 24px;text-align:center}
+.hero h1{
+  font-size:clamp(1.5rem,4vw,2.4rem);
+  font-weight:900;line-height:1.1;letter-spacing:-1px;
+  margin-bottom:14px;
+  background:linear-gradient(115deg,#ec4899 0%,#8b5cf6 45%,#06b6d4 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p{
+  color:var(--muted);max-width:640px;margin:0 auto;
+  font-weight:600;font-size:1rem;
+}
+.actions-bar{
+  display:flex;justify-content:center;gap:10px;
+  flex-wrap:wrap;margin-bottom:24px;
+}
+.btn-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font:inherit;font-weight:900;font-size:.94rem;
+  padding:13px 24px;border-radius:14px;border:0;
+  cursor:pointer;transition:.15s;text-decoration:none;
+}
+.btn-link.primary{
+  color:#fff;
+  background:linear-gradient(135deg,#ec4899,#8b5cf6 55%,#06b6d4);
+  box-shadow:0 6px 0 #7c3aed, 0 12px 22px -8px rgba(139,92,246,.55);
+}
+.btn-link.primary:hover{transform:translateY(-2px);box-shadow:0 8px 0 #7c3aed, 0 18px 28px -8px rgba(139,92,246,.65)}
+.btn-link.primary:active{transform:translateY(3px);box-shadow:0 3px 0 #7c3aed}
+.btn-link.ghost{
+  color:#4f46e5;background:#fff;
+  box-shadow:0 6px 0 #e0e7ff;
+}
+.btn-link.ghost:hover{transform:translateY(-2px);box-shadow:0 8px 0 #c7d2fe}
+.btn-link.ghost:active{transform:translateY(3px);box-shadow:0 3px 0 #c7d2fe}
+.task-card{
+  background:#fff;
+  border:3px solid var(--card-border);
+  border-radius:20px;
+  padding:24px 26px;
+  margin-bottom:18px;
+  box-shadow:0 6px 0 var(--card-border), 0 16px 30px -16px rgba(99,102,241,.35);
+}
+.task-head{
+  display:flex;align-items:flex-start;gap:12px;
+  padding-bottom:14px;margin-bottom:14px;
+  border-bottom:2px dashed #e0e7ff;
+}
+.task-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:52px;height:44px;padding:0 12px;
+  border-radius:12px;
+  font-size:.9rem;font-weight:900;color:#fff;
+  background:linear-gradient(135deg,#ec4899,#8b5cf6);
+  box-shadow:0 4px 10px -3px rgba(139,92,246,.5);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.task-text{
+  font-size:1rem;font-weight:800;color:var(--ink);
+  flex:1;padding-top:8px;
+}
+.task-text .val{
+  font-family:'JetBrains Mono',monospace;
+  background:#dbeafe;color:#1e40af;
+  padding:2px 8px;border-radius:6px;
+  font-weight:900;
+}
+.reveal-btn{
+  font:inherit;font-weight:800;font-size:.88rem;
+  padding:9px 18px;border-radius:11px;border:0;
+  cursor:pointer;transition:.15s;
+  color:#fff;
+  background:linear-gradient(135deg,#8b5cf6,#ec4899);
+  box-shadow:0 4px 0 #7c3aed;
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:14px;
+}
+.reveal-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #7c3aed}
+.reveal-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #7c3aed}
+.reveal-btn.open{
+  background:linear-gradient(135deg,#10b981,#059669);
+  box-shadow:0 4px 0 #047857;
+}
+.answer-content{display:none;animation:fade .3s ease}
+.answer-content.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.solution-block{
+  background:#f8fafc;
+  border:2px solid #e0e7ff;
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:14px;
+}
+.solution-block:last-child{margin-bottom:0}
+.solution-label{
+  font-size:.72rem;font-weight:900;
+  letter-spacing:.8px;text-transform:uppercase;
+  color:#7c3aed;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.solution-label::before{
+  content:"";width:4px;height:16px;border-radius:2px;
+  background:linear-gradient(180deg,#ec4899,#8b5cf6);
+}
+.div-steps{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.05rem;font-weight:700;
+  line-height:2;
+  color:#334155;
+  padding:10px 14px;
+  background:#fff;
+  border:2px dashed #c4b5fd;
+  border-radius:12px;
+  overflow-x:auto;
+}
+.div-steps .row{white-space:nowrap}
+.div-steps .rem{
+  color:#ec4899;font-weight:900;
+  background:#fce7f3;
+  padding:1px 8px;border-radius:6px;
+  margin-left:6px;
+}
+.div-steps .stop{
+  color:#065f46;font-weight:900;
+  background:#d1fae5;
+  padding:2px 10px;border-radius:6px;
+  display:inline-block;
+}
+.div-steps .last-q{
+  color:#7c3aed;font-weight:900;
+  background:#ede9fe;
+  padding:2px 10px;border-radius:6px;
+}
+.answer-box{
+  background:linear-gradient(135deg,#ecfdf5,#d1fae5);
+  border:3px solid #6ee7b7;
+  border-radius:14px;
+  padding:14px 20px;
+  display:flex;align-items:center;gap:14px;
+  flex-wrap:wrap;
+  box-shadow:0 4px 0 #6ee7b7;
+}
+.answer-box .label{
+  font-weight:900;font-size:.92rem;color:#065f46;
+}
+.answer-box .value{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.5rem;font-weight:900;
+  color:#065f46;
+  letter-spacing:2px;
+  padding:4px 14px;
+  background:#fff;
+  border-radius:10px;
+  border:2px solid #6ee7b7;
+}
+.answer-box .check{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;font-weight:800;
+  color:#047857;
+  padding:4px 10px;
+  background:rgba(255,255,255,.65);
+  border-radius:8px;
+}
+.digits-table{
+  width:100%;
+  border-collapse:separate;border-spacing:0;
+  border-radius:12px;overflow:hidden;
+  border:2px solid #c7d2fe;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.95rem;
+  margin:8px 0;
+}
+.digits-table th{
+  background:linear-gradient(135deg,#c7d2fe,#a5b4fc);
+  color:#1e3a8a;padding:10px 8px;
+  font-weight:900;font-size:.74rem;
+  text-transform:uppercase;letter-spacing:.5px;
+  text-align:center;
+}
+.digits-table td{
+  padding:12px 8px;text-align:center;
+  background:#fff;
+  border-top:1px solid #e0e7ff;
+  font-weight:800;color:#334155;
+  font-size:1.05rem;
+}
+.digits-table td.highlight{
+  background:#fef3c7;
+  color:#92400e;
+}
+.digits-table tbody tr:nth-child(2) td:not(.highlight){
+  background:#fafbff;
+}
+.note{
+  font-size:.88rem;font-weight:700;
+  color:#64748b;
+  padding:10px 14px;
+  background:#fff;
+  border:2px solid #e0e7ff;
+  border-radius:10px;
+  margin-top:10px;
+}
+.note b{color:#7c3aed}
+.note-warn{
+  background:#fffbeb;
+  border-color:#fde68a;
+  color:#78350f;
+}
+.note-warn b{color:#92400e}
+.ref-card{
+  background:#fff;
+  border:3px solid var(--card-border);
+  border-radius:20px;
+  padding:24px 26px;
+  margin-top:22px;
+  box-shadow:0 6px 0 var(--card-border), 0 16px 30px -16px rgba(99,102,241,.35);
+}
+.ref-card h2{
+  font-size:1.1rem;font-weight:900;
+  margin-bottom:14px;color:#1e3a8a;
+  display:flex;align-items:center;gap:10px;
+}
+.ref-card h2::before{
+  content:"";width:5px;height:20px;border-radius:3px;
+  background:linear-gradient(180deg,#ec4899,#8b5cf6);
+}
+.ref-card p{color:#475569;font-weight:600;font-size:.95rem;line-height:1.7;}
+footer{
+  padding:40px 0;
+  text-align:center;
+  color:var(--soft);
+  font-weight:700;
+  font-size:.85rem;
+  border-top:2px dashed #e0e7ff;
+  margin-top:40px;
+}
+footer .gradient-text{
+  background:linear-gradient(115deg,#ec4899,#8b5cf6 55%,#06b6d4);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-weight:900;
+}
+@media(max-width:640px){
+  .task-card{padding:18px 16px;border-radius:16px}
+  .task-head{flex-direction:column;align-items:flex-start;gap:8px}
+  .task-text{padding-top:0}
+  .div-steps{font-size:.88rem;padding:8px 10px}
+  .answer-box .value{font-size:1.2rem;padding:3px 10px}
+  .digits-table{font-size:.78rem}
+  .digits-table th,.digits-table td{padding:8px 5px}
+  .ref-card{padding:18px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="лейдинг.html" class="topbar-logo"><span>🧮</span> Цифровой переводчик</a>
+    <nav class="topbar-nav">
+      <a href="лейдинг.html">🏠 Главная</a>
+      <a href="trainer.html">🚀 Тренажёр</a>
+      <a href="answers.html" class="active">🔑 Ответы</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="hero">
+    <h1>🔑 Ответы и решения</h1>
+    <p>Пошаговые разборы всех заданий рабочего листа. Сначала попробуй решить сам — потом открой ответ и проверь себя.</p>
+  </div>
+
+  <div class="actions-bar">
+    <a href="лейдинг.html" class="btn-link ghost">← К рабочему листу</a>
+    <a href="trainer.html" class="btn-link primary">🚀 Открыть тренажёр</a>
+    <button class="btn-link ghost" onclick="toggleAll()">👁 Показать все решения</button>
+  </div>
+
+  <!-- ===== ЗАДАЧА 1 ===== -->
+  <div class="task-card">
+    <div class="task-head">
+      <div class="task-num">№1</div>
+      <div class="task-text">Перевести <span class="val">45₁₀</span> в двоичную систему счисления</div>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)">👁 Показать решение</button>
+    <div class="answer-content">
+      <div class="solution-block">
+        <div class="solution-label">Деление на 2 столбиком</div>
+        <div class="div-steps">
+          <div class="row">45 ÷ 2 = 22, остаток <span class="rem">1</span></div>
+          <div class="row">22 ÷ 2 = 11, остаток <span class="rem">0</span></div>
+          <div class="row">11 ÷ 2 = &nbsp;5, остаток <span class="rem">1</span></div>
+          <div class="row">&nbsp;5 ÷ 2 = &nbsp;2, остаток <span class="rem">1</span></div>
+          <div class="row">&nbsp;2 ÷ 2 = &nbsp;1, остаток <span class="rem">0</span></div>
+          <div class="row" style="margin-top:6px;"><span class="stop">1 &lt; 2 — останавливаемся. Последнее частное = 1</span></div>
+        </div>
+        <div class="note" style="margin-top:10px;">
+          <b>Читаем снизу вверх:</b> последнее частное (1), затем остатки снизу вверх (0, 1, 1, 0, 1).
+        </div>
+      </div>
+      <div class="answer-box">
+        <span class="label">Ответ:</span>
+        <span class="value">101101₂</span>
+        <span class="check">Проверка: 32 + 8 + 4 + 1 = 45 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ЗАДАЧА 2 ===== -->
+  <div class="task-card">
+    <div class="task-head">
+      <div class="task-num">№2</div>
+      <div class="task-text">Перевести <span class="val">156₁₀</span> в восьмеричную систему счисления</div>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)">👁 Показать решение</button>
+    <div class="answer-content">
+      <div class="solution-block">
+        <div class="solution-label">Деление на 8 столбиком</div>
+        <div class="div-steps">
+          <div class="row">156 ÷ 8 = 19, остаток <span class="rem">4</span></div>
+          <div class="row">&nbsp;19 ÷ 8 = &nbsp;2, остаток <span class="rem">3</span></div>
+          <div class="row" style="margin-top:6px;"><span class="stop">2 &lt; 8 — останавливаемся. Последнее частное = 2</span></div>
+        </div>
+        <div class="note" style="margin-top:10px;">
+          <b>Читаем снизу вверх:</b> 2 (последнее частное), затем 3, затем 4.
+        </div>
+      </div>
+      <div class="answer-box">
+        <span class="label">Ответ:</span>
+        <span class="value">234₈</span>
+        <span class="check">Проверка: 2·64 + 3·8 + 4 = 156 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ЗАДАЧА 3 ===== -->
+  <div class="task-card">
+    <div class="task-head">
+      <div class="task-num">№3</div>
+      <div class="task-text">Перевести <span class="val">231₁₀</span> в шестнадцатеричную систему счисления</div>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)">👁 Показать решение</button>
+    <div class="answer-content">
+      <div class="solution-block">
+        <div class="solution-label">Деление на 16 столбиком</div>
+        <div class="div-steps">
+          <div class="row">231 ÷ 16 = 14, остаток <span class="rem">7</span></div>
+          <div class="row" style="margin-top:6px;"><span class="stop">14 &lt; 16 — останавливаемся. Последнее частное = 14</span></div>
+        </div>
+        <div class="note note-warn" style="margin-top:10px;">
+          <b>Не забудь:</b> 14 в шестнадцатеричной записи — это буква <b>E</b>. А остаток 7 так и остаётся цифрой 7.
+        </div>
+      </div>
+      <div class="answer-box">
+        <span class="label">Ответ:</span>
+        <span class="value">E7₁₆</span>
+        <span class="check">Проверка: 14·16 + 7 = 231 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ЗАДАЧА 4 ===== -->
+  <div class="task-card">
+    <div class="task-head">
+      <div class="task-num">№4</div>
+      <div class="task-text">Перевести <span class="val">1011₂</span> в десятичную систему по разрядам</div>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)">👁 Показать решение</button>
+    <div class="answer-content">
+      <div class="solution-block">
+        <div class="solution-label">Нумеруем разряды справа налево</div>
+        <table class="digits-table">
+          <thead>
+            <tr><th>Разряд</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Цифра</b></td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+            <tr><td><b>Вес (2<sup>разряд</sup>)</b></td><td class="highlight">8</td><td class="highlight">4</td><td class="highlight">2</td><td class="highlight">1</td></tr>
+            <tr><td><b>Значение</b></td><td>1·8 = 8</td><td>0·4 = 0</td><td>1·2 = 2</td><td>1·1 = 1</td></tr>
+          </tbody>
+        </table>
+        <div class="div-steps" style="margin-top:10px;">
+          <div class="row">Сумма: 8 + 0 + 2 + 1 = <span class="last-q">11</span></div>
+        </div>
+      </div>
+      <div class="answer-box">
+        <span class="label">Ответ:</span>
+        <span class="value">11₁₀</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ЗАДАЧА 5 ===== -->
+  <div class="task-card">
+    <div class="task-head">
+      <div class="task-num">№5</div>
+      <div class="task-text">Перевести <span class="val">3A₁₆</span> в десятичную систему по разрядам</div>
+    </div>
+    <button class="reveal-btn" onclick="toggleAnswer(this)">👁 Показать решение</button>
+    <div class="answer-content">
+      <div class="solution-block">
+        <div class="solution-label">Нумеруем разряды справа налево</div>
+        <table class="digits-table">
+          <thead>
+            <tr><th>Разряд</th><th>1</th><th>0</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Цифра</b></td><td>3</td><td>A (это 10)</td></tr>
+            <tr><td><b>Вес (16<sup>разряд</sup>)</b></td><td class="highlight">16</td><td class="highlight">1</td></tr>
+            <tr><td><b>Значение</b></td><td>3·16 = 48</td><td>10·1 = 10</td></tr>
+          </tbody>
+        </table>
+        <div class="div-steps" style="margin-top:10px;">
+          <div class="row">Сумма: 48 + 10 = <span class="last-q">58</span></div>
+        </div>
+        <div class="note note-warn" style="margin-top:10px;">
+          <b>Помни:</b> A = 10, B = 11, C = 12, D = 13, E = 14, F = 15.
+        </div>
+      </div>
+      <div class="answer-box">
+        <span class="label">Ответ:</span>
+        <span class="value">58₁₀</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== СПРАВОЧНАЯ ТАБЛИЦА ===== -->
+  <div class="ref-card">
+    <h2>📖 Таблица соответствия систем счисления</h2>
+    <table class="digits-table" id="ref-table">
+      <thead>
+        <tr><th>10</th><th>2</th><th>8</th><th>16</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="note" style="margin-top:14px;">
+      <b>Как пользоваться:</b> найди число в столбце «10» и посмотри его запись в нужной системе.
+      Например, 11₁₀ = 1011₂ = 13₈ = B₁₆.
+    </div>
+  </div>
+
+  <!-- ===== ПАМЯТКА ===== -->
+  <div class="ref-card">
+    <h2>💡 Короткая памятка по алгоритмам</h2>
+    <div class="solution-block">
+      <div class="solution-label">10 → любая система</div>
+      <p>Делим число на основание новой системы <b>уголком</b>. Как только очередное частное станет
+      <b>меньше основания</b> — останавливаемся. Ответ = последнее частное + остатки, записанные
+      <b>снизу вверх</b>.</p>
+    </div>
+    <div class="solution-block">
+      <div class="solution-label">любая → 10</div>
+      <p>Нумеруем разряды справа налево, начиная с 0. Считаем вес каждого разряда как
+      <b>основание<sup>разряд</sup></b>. Умножаем цифру на вес и складываем все значения.</p>
+    </div>
+    <div class="solution-block">
+      <div class="solution-label">2 ↔ 8 ↔ 16</div>
+      <p><b>2 → 8:</b> группируем биты справа налево по 3. Каждая тройка — одна восьмеричная цифра.<br>
+      <b>2 → 16:</b> то же, но группы по 4 бита.<br>
+      <b>Обратно:</b> каждая цифра заменяется на 3 (для 8) или 4 (для 16) бита.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>Программа повышения квалификации<br>
+    <span class="gradient-text">«Информатика в междисциплинарных проектах: Архитектура образовательных решений»</span></p>
+    <p style="margin-top:10px;font-size:.78rem;">10 класс · Ответы к рабочему листу</p>
+  </div>
+</footer>
+
+<script>
+function toggleAnswer(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.toggle('show');
+  btn.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? '🙈 Скрыть решение' : '👁 Показать решение';
+}
+
+let allOpen = false;
+function toggleAll() {
+  allOpen = !allOpen;
+  document.querySelectorAll('.answer-content').forEach(el => {
+    el.classList.toggle('show', allOpen);
+  });
+  document.querySelectorAll('.reveal-btn').forEach(btn => {
+    btn.classList.toggle('open', allOpen);
+    btn.textContent = allOpen ? '🙈 Скрыть решение' : '👁 Показать решение';
+  });
+  const mainBtn = document.querySelector('.actions-bar button');
+  if (mainBtn) {
+    mainBtn.textContent = allOpen ? '🙈 Скрыть все решения' : '👁 Показать все решения';
+  }
+}
+
+(function buildRefTable() {
+  const tbody = document.querySelector('#ref-table tbody');
+  if (!tbody) return;
+  let html = '';
+  for (let i = 0; i < 16; i++) {
+    html += `<tr>
+      <td><b>${i}</b></td>
+      <td>${i.toString(2).padStart(4, '0')}</td>
+      <td>${i.toString(8)}</td>
+      <td>${i.toString(16).toUpperCase()}</td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+})();
+</script>
+
+</body>
+</html>
